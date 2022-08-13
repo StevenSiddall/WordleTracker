@@ -1,0 +1,1 @@
+Wordle discord bot which reads/saves wordle scores and calculates and presents stats in response to text commands.
