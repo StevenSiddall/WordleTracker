@@ -1,0 +1,6 @@
+# Ignore virtual environment folder
+env/
+
+# Ignore python specific stuff - internal caching mainly
+__pycache__/
+*.py[cod]
