@@ -4,3 +4,6 @@ env/
 # Ignore python specific stuff - internal caching mainly
 __pycache__/
 *.py[cod]
+
+# Ignore constants.py so we don't have private keys on public repo
+constants.py

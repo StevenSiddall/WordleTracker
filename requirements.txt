@@ -5,7 +5,6 @@ chardet==4.0.0
 discord==1.7.3
 discord.py==1.7.3
 idna==3.3
-isort==5.10.1
 multidict==6.0.2
 typing-extensions==4.3.0
 yarl==1.8.1
