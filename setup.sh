@@ -17,6 +17,3 @@ echo "+++ Creating Virtual Environment"
 mkdir env
 pip install virtualenv
 python -m venv env
-
-# Populate virtual environment with required packages
-echo "+++ Creating Virtual Environment"
