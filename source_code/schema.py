@@ -1,28 +1,59 @@
 from dataclasses import dataclass, field
-from re import A
-from typing import List
-import json
+import os
+from typing import List, Dict
+import pickle
 
-SERVER_FILE_NAME: str = "servers.json"
+__STORAGE_FILE: str = "data.pkl"
 
-__info: dict = {}
-__info_initialized: bool = False
+@dataclass
+class Season:
+    num_attempts_history: List[int] = field(default_factory=list)
+    total_guesses: int = field(default=0)
+    submissions: int = field(default=0)
+
+@dataclass
+class User:
+    display_name: str = field(default="ERROR")
+    id: str = field(default=None)
+    seasons: List[Season] = field(default_factory=list)
+
+@dataclass
+class Server:
+    user_dict: Dict[str, User] = field(default_factory=dict)
+    id: str = field(default=None)
+
+@dataclass
+class Data:
+    servers: Dict[str, Server] = field(default_factory=dict)
 
 
-def _load_json_file(name: str) -> dict:
-    with open(name, "R") as f:
-        d: dict = json.loads(f.read())
-    return d
+__data: Data = None
 
-if not __info_initialized:
+def sync_data():
+    with open(__STORAGE_FILE, "wb") as f:
+        pickle.dump(__data, f)
+
+def get_server(id: str) -> Server:
+    if id not in __data.servers.keys():
+        return None
+    return __data.servers[id]
+
+def add_server(id: str):
+    if id in __data.servers.keys():
+        raise Exception("Attempt to add a server with an id that already exists. You fucked up.")
+    # Id in the map should always match the one in the server
+    __data.servers[id] = Server(id=id)
+
+__initialized: bool = False
+if not __initialized:
     # Load the actual data from JSON
-    # TODO: Make JSON files if they don't exist
     print("+++ Loading information from json files")
-    servers: dict = _load_json_file(SERVER_FILE_NAME)
-    __info_initialized = True
-
-def get_user(server: str, user_id: str) -> User:
-    # TODO: Messy shit to actually get user
-
-def add_user(server: str, user_id: str) -> bool:
-    return False
+    if not os.path.exists(__STORAGE_FILE):
+        # First time doing this, create empty data and sync to file
+        __data = Data()
+        sync_data()
+    else:
+        # Read in binary, pickled objects stored as binary files
+        with open(__STORAGE_FILE, "rb") as f:
+            __data = pickle.load(f)
+    __initialized = True
